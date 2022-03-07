@@ -220,20 +220,6 @@ export async function getServerSideProps({ req, res }) {
             disk: disk - useddisk
         }
     }
-    if (uinfo.used.cpu > uinfo.cpu || uinfo.used.memory > uinfo.memory || uinfo.used.disk > uinfo.disk || uinfo.used.serverlimit > uinfo.serverlimit) {
-        servers.forEach(async s => {
-            const suspendres = await Axios.post(`https://${config.panel_url}/api/application/servers/${s.attributes.id}/suspend`, {}, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Authorization": `Bearer ${config.panel_apikey}`
-                }
-            }).catch(e => console.log(e.response.data.errors))
-            if (suspendres.status !== 204) {
-                console.error("Error suspending server")
-            }
-        })
-    }
     const rs = await executeQuery("SELECT * FROM renewals WHERE uid = ?", [session.sub])
     const renewalservers = rs.map(r => JSON.parse(JSON.stringify(r)))
     const ds = await executeQuery("SELECT * FROM deletions WHERE uid = ?", [session.sub])
