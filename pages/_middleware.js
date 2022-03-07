@@ -13,6 +13,7 @@ export async function middleware(req) {
     })
     if (req.url.includes("/favicon.png") || req.page.name && req.page.name.includes("/favicon.png")) return NextResponse.next()
     if (req.url.includes("/api/admin") || req.page.name && req.page.name.includes("/api/admin")) return NextResponse.next()
+    if (req.url.includes("/api/auth/signout") && session) return NextResponse.next()
     if (req.url.includes("/api/auth/signin") || req.page.name && req.page.name.includes("/api/auth/")) {
         if (!session) {
             return NextResponse.next()

@@ -48,7 +48,7 @@ import { MdKeyboardArrowRight, MdOutlineShoppingCart, MdOutlineLeaderboard } fro
 import { FiServer } from 'react-icons/fi'
 import { RiUDiskFill, RiLockPasswordLine } from 'react-icons/ri'
 import { GoServer } from 'react-icons/go'
-import { IoHomeOutline } from 'react-icons/io5'
+import { IoHomeOutline, IoLogOutSharp } from 'react-icons/io5'
 import React from "react";
 import config from '../config.json'
 import Script from 'next/script'
@@ -117,7 +117,7 @@ export default function Swibc(prps) {
                 }}
                 role="group"
                 fontWeight="semibold"
-                transition=".15s ease"
+                transition=".30s ease"
                 {...rest}
             >
                 {icon && (
@@ -194,6 +194,7 @@ export default function Swibc(prps) {
                 </Collapse>
                 <NavItem icon={RiLockPasswordLine} onClick={() => regenPass()}>Regenerate Password</NavItem>
                 <NavItem icon={MdOutlineLeaderboard} onClick={() => setIsOpenAlertCoinsLeaderboard(true)}>Coins Leaderboard</NavItem>
+                <NavItem float="bottom" icon={IoLogOutSharp} onClick={window.location.href="/api/auth/signout"}>Sign Out</NavItem>
             </Flex>
             <AlertDialog isOpen={isOpenAlertCpu} leastDestructiveRef={cancelRefAlertCpu} onClose={() => setIsOpenAlertCpu(false)}>
                 <AlertDialogOverlay>
