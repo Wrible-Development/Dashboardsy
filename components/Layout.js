@@ -194,7 +194,7 @@ export default function Swibc(prps) {
                 </Collapse>
                 <NavItem icon={RiLockPasswordLine} onClick={() => regenPass()}>Regenerate Password</NavItem>
                 <NavItem icon={MdOutlineLeaderboard} onClick={() => setIsOpenAlertCoinsLeaderboard(true)}>Coins Leaderboard</NavItem>
-                <NavItem float="bottom" icon={IoLogOutSharp} onClick={() => window.location.href="/api/auth/signout"}>Sign Out</NavItem>
+                <NavItem bottom={0} icon={IoLogOutSharp} onClick={() => window.location.href="/api/auth/signout"}>Sign Out</NavItem>
             </Flex>
             <AlertDialog isOpen={isOpenAlertCpu} leastDestructiveRef={cancelRefAlertCpu} onClose={() => setIsOpenAlertCpu(false)}>
                 <AlertDialogOverlay>
