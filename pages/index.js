@@ -203,6 +203,7 @@ export async function getServerSideProps({ req, res }) {
     const serverlimit = sqlr[0].serverlimit;
     usedservers = servers.length;
     const uinfo = {
+        userid: session.sub,
         cpu,
         memory,
         disk,

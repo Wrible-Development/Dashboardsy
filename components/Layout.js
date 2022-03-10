@@ -43,12 +43,12 @@ import {
 import Head from 'next/head'
 import { FaMemory } from "react-icons/fa";
 import { BsFillCpuFill } from "react-icons/bs";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiServer } from "react-icons/fi";
 import { MdKeyboardArrowRight, MdOutlineShoppingCart, MdOutlineLeaderboard } from "react-icons/md";
-import { FiServer } from 'react-icons/fi'
 import { RiUDiskFill, RiLockPasswordLine } from 'react-icons/ri'
 import { GoServer } from 'react-icons/go'
-import { IoHomeOutline, IoLogOutSharp } from 'react-icons/io5'
+import { IoHomeOutline, IoLogOutOutline, IoGameControllerOutline } from 'react-icons/io5'
+import { HiOutlineUser } from 'react-icons/hi'
 import React from "react";
 import config from '../config.json'
 import Script from 'next/script'
@@ -67,7 +67,12 @@ export default function Swibc(prps) {
     const handleChangeCpu = (event) => cpu = event
     const handleChangeEgg = (event) => egg = event.target.value
     const handleChangeLoc = (event) => loc = event.target.value
-
+    function openPanel() {
+        window.open(
+            'https://' + config.panel_url,
+            '_blank'
+          );
+    }
     const [isOpenAlertCoinsLeaderboard, setIsOpenAlertCoinsLeaderboard] = React.useState(false)
     const onAlertCoinsLeaderboard = () => {
         setIsOpenAlertCoinsLeaderboard(false)
@@ -80,6 +85,13 @@ export default function Swibc(prps) {
         setIsOpenAlertCpu(false)
     }
     const cancelRefAlertCpu = React.useRef()
+
+    const [isOpenAlertCredentials, setIsOpenAlertCredentials] = React.useState(false)
+    const onCloseAlertCredentials = () => {
+        openPanel()
+        setIsOpenAlertCredentials(false)
+    }
+    const cancelRefAlertCredentials = React.useRef()
 
     const [isOpenAlertMem, setIsOpenAlertMem] = React.useState(false)
     const onCloseAlertMem = () => {
@@ -194,8 +206,36 @@ export default function Swibc(prps) {
                 </Collapse>
                 <NavItem icon={RiLockPasswordLine} onClick={() => regenPass()}>Regenerate Password</NavItem>
                 <NavItem icon={MdOutlineLeaderboard} onClick={() => setIsOpenAlertCoinsLeaderboard(true)}>Coins Leaderboard</NavItem>
-                <NavItem w="100%" position="absolute" bottom={0} icon={IoLogOutSharp} onClick={() => window.location.href="/api/auth/signout"} mb={5}>Sign Out</NavItem>
+                <NavItem icon={HiOutlineUser} onClick={() => setIsOpenAlertCredentials(true)}>Credentials</NavItem>
+                <NavItem icon={IoGameControllerOutline} onClick={openPanel}>Panel</NavItem>
+                <NavItem w="100%" position="absolute" bottom={0} icon={IoLogOutOutline} onClick={() => window.location.href="/api/auth/signout"} mb={5}>Sign Out</NavItem>
             </Flex>
+            <AlertDialog isOpen={isOpenAlertCredentials} leastDestructiveRef={cancelRefAlertCredentials} onClose={() => setIsOpenAlertCredentials(false)}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                            Panel Credentials
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            <Text fontSize='lg' fontWeight='bold'>
+                                Username: {uinfo.userid}
+                            </Text>
+                            <Text fontSize='lg' fontWeight='bold'>
+                                Password: {"Please regenerate your password using the button on the sidebar."}
+                            </Text>
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRefAlertCpu} onClick={() => setIsOpenAlertCredentials(false)}>
+                                Close
+                            </Button>
+                            <Button colorScheme='blue' onClick={onCloseAlertCredentials} ml={3}>
+                                Panel
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
             <AlertDialog isOpen={isOpenAlertCpu} leastDestructiveRef={cancelRefAlertCpu} onClose={() => setIsOpenAlertCpu(false)}>
                 <AlertDialogOverlay>
                     <AlertDialogContent>
