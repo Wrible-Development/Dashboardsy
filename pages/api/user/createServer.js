@@ -82,7 +82,10 @@ export default async function handler(req, res) {
             "Accept": "application/json",
             "Authorization": `Bearer ${config.panel_apikey}`
         }
-    })
+    }).catch(e => console.error(e.response.data.errors));
+    if (!resd) {
+        return res.status(500).json({ message: '500 Internal Server Error', error: true });
+    }
     if (resd.status !== 200 && resd.status !== 201) {
         return res.status(resd.status).json({ message: `${resd.status} Error!`, error: true });
     }
