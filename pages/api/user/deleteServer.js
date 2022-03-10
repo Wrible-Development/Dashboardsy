@@ -31,7 +31,6 @@ export default async function handler(req, res) {
     if (!serverdata) {
         return res.status(404).json({ message: 'Server Not Found', error: true });
     }
-    await executeQuery("UPDATE usedresources SET cpu = cpu - ?, memory = memory - ?, disk = disk - ? WHERE uid = ?", [serverdata.attributes.limits.cpu, serverdata.attributes.limits.memory, serverdata.attributes.limits.disk, session.sub]);
     const resd = await Axios.delete(`https://${config.panel_url}/api/application/servers/${serverdata.attributes.id}`, {
         headers: {
             "Content-Type": "application/json",
@@ -42,6 +41,7 @@ export default async function handler(req, res) {
     if (resd.status !== 200 && resd.status !== 201 && resd.status !== 204) {
         return res.status(resd.status).json({ message: `${resd.status} Error!`, error: true });
     }
+    await executeQuery("UPDATE usedresources SET cpu = cpu - ?, memory = memory - ?, disk = disk - ? WHERE uid = ?", [serverdata.attributes.limits.cpu, serverdata.attributes.limits.memory, serverdata.attributes.limits.disk, session.sub]);
     delCache(`servers:${session.sub}`);
     await sendLog("Delete Server", session, `Server ID: ${req.body.serverid}`)
     return res.status(200).json({ "message": "Sucessful", error: false });

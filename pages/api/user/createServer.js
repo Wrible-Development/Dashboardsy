@@ -51,10 +51,7 @@ export default async function handler(req, res) {
     if (!checkIfLocExists || !egg) {
         return res.status(400).json({ message: '400 Bad Request', error: true });
     }
-    const sqlrs = await executeQuery("UPDATE usedresources SET cpu = cpu + ?, memory = memory + ?, disk = disk + ? WHERE uid = ?", [req.body.resources.cpu, req.body.resources.memory, req.body.resources.disk, session.sub]);
-    if (sqlrs === false) {
-        await executeQuery("INSERT INTO usedresources (uid, cpu, memory, disk, ptero_uid) VALUES (?, ?, ?, ?, ?)", [session.sub, req.body.resources.cpu, req.body.resources.memory, req.body.resources.disk, sqlres.ptero_uid]);
-    }
+    
     const specs = {
         "name": req.body.sname,
         "user": sqlres[0].ptero_uid,
@@ -88,6 +85,10 @@ export default async function handler(req, res) {
     })
     if (resd.status !== 200 && resd.status !== 201) {
         return res.status(resd.status).json({ message: `${resd.status} Error!`, error: true });
+    }
+    const sqlrs = await executeQuery("UPDATE usedresources SET cpu = cpu + ?, memory = memory + ?, disk = disk + ? WHERE uid = ?", [req.body.resources.cpu, req.body.resources.memory, req.body.resources.disk, session.sub]);
+    if (sqlrs === false) {
+        await executeQuery("INSERT INTO usedresources (uid, cpu, memory, disk, ptero_uid) VALUES (?, ?, ?, ?, ?)", [session.sub, req.body.resources.cpu, req.body.resources.memory, req.body.resources.disk, sqlres.ptero_uid]);
     }
     if (config.renewal.enabled) {
         await executeQuery("INSERT INTO renewals (uid, serverid, renewaldate) VALUES (?, ?, ?)", [session.sub, resd.data.attributes.id, (new Date().getTime() + (config.renewal.daystorenewafter * 24 * 60 * 60 * 1000))]);

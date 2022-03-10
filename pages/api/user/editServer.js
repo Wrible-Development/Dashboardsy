@@ -46,8 +46,7 @@ export default async function handler(req, res) {
     if (unused.cpu < req.body.resources.cpu || unused.memory < req.body.resources.memory || unused.disk < req.body.resources.disk) {
         return res.status(400).json({ message: '400 Bad Request (You dont have enough resources)', error: true });
     }
-    await executeQuery("UPDATE usedresources SET cpu = cpu - ?, memory = memory - ?, disk = disk - ? WHERE uid = ?", [serverdata.attributes.limits.cpu, serverdata.attributes.limits.memory, serverdata.attributes.limits.disk, session.sub]);
-    await executeQuery("UPDATE usedresources SET cpu = cpu + ?, memory = memory + ?, disk = disk + ? WHERE uid = ?", [req.body.resources.cpu, req.body.resources.memory, req.body.resources.disk, session.sub]);
+    
 
     const specs = {
         "allocation": serverdata.attributes.allocation,
@@ -71,6 +70,8 @@ export default async function handler(req, res) {
     if (resd.status !== 200 && resd.status !== 201) {
         return res.status(resd.status).json({ message: `${resd.status} Error!`, error: true });
     }
+    await executeQuery("UPDATE usedresources SET cpu = cpu - ?, memory = memory - ?, disk = disk - ? WHERE uid = ?", [serverdata.attributes.limits.cpu, serverdata.attributes.limits.memory, serverdata.attributes.limits.disk, session.sub]);
+    await executeQuery("UPDATE usedresources SET cpu = cpu + ?, memory = memory + ?, disk = disk + ? WHERE uid = ?", [req.body.resources.cpu, req.body.resources.memory, req.body.resources.disk, session.sub]);
     await sendLog("Edit Server", session, `Server ID: ${req.body.serverid}`)
     return res.status(200).json({ "message": "200 OK", error: false });
 }
