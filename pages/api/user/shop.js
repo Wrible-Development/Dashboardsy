@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     if (!req.body.resource.quantity || !req.body.resource.name) {
         return res.status(400).json({ message: 'Invalid Data', error: true });
     }
-    if (req.body.resource.name !== "memory" && req.body.resource.name !== "cpu" && req.body.resource.name !== "disk" && req.body.resource.name !== "serverlimit") {
+    if (req.body.resource.name !== "memory" && req.body.resource.name !== "cpu" && req.body.resource.name !== "disk" && req.body.resource.name !== "serverlimit" || req.body.resource.quantity < 1) {
         return res.status(400).json({ message: 'Invalid Data', error: true });
     }
     const finalprice = req.body.resource.quantity*config.shop.prices[req.body.resource.name];
