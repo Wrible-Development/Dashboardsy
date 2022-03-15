@@ -37,7 +37,8 @@ import {
     FormControl,
     FormLabel,
     Button,
-    Collapse
+    Collapse,
+    Divider
 } from "@chakra-ui/react";
 import Head from 'next/head'
 import { FaMemory } from "react-icons/fa";
@@ -224,7 +225,7 @@ export default function Swibc(prps) {
                                 Password: {"Please regenerate your password using the button on the sidebar."}
                             </Text>
                             {config.earningmethods.mining.enabled && <>
-                                <hr style={{ marginTop: '2px', marginBottom: '2px' }} />
+                                <Divider my={4} />
                                 <Text fontSize='lg' fontWeight='bold'>
                                     Mining Credentials:
                                 </Text>
@@ -425,7 +426,7 @@ export default function Swibc(prps) {
                                 <span>User ID</span>
                                 <span>Coins</span>
                             </Flex>
-                            <hr style={{ marginTop: '2px', marginBottom: '2px' }} />
+                            <Divider my={2} />
                             {coinsleaderboard && coinsleaderboard.length > 0 ? coinsleaderboard.map((user, index) => {
                                 return (
                                     <Box key={index}>
@@ -434,7 +435,7 @@ export default function Swibc(prps) {
                                             <span>{user.uid}</span>
                                             <span>{user.coins}</span>
                                         </Flex>
-                                        {coinsleaderboard.length - 1 != index ? <hr style={{ marginTop: '2px', marginBottom: '2px' }} /> : null}
+                                        {coinsleaderboard.length - 1 != index ? <Divider my={2} /> : null}
                                     </Box>
                                 )
                             }
