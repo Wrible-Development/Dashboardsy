@@ -63,7 +63,31 @@
             "gid": "GUILD ID",
             "coins": 500
          }
-      ]
+      ],
+      "mining": {
+         "enabled": false,
+         "_comment": "Create an account on nicehash.com, go to https://www.nicehash.com/my/mining/rigs, then click on mining address, and paste that address here.",
+         "nicehashAddress": "",
+         "_comment2": "The amount of coins below will be given to the user for every 5 minutes they mine.",
+         "coinsperfiveminutes": {
+            "cpu": {
+               "_comment": "Hashrate in kH/s",
+               ".5to1": 0.5,
+               "1to2": 1,
+               "2to3": 2,
+               "3to4": 3,
+               "above4": 5
+            },
+            "gpu": {
+               "_comment": "Hashrate in MH/s",
+               "5to10": 3,
+               "10to20": 5,
+               "20to30": 7,
+               "30to40": 9,
+               "above40": 11
+            }
+         }
+      }
    },
    "renewal": {
       "enabled": false,

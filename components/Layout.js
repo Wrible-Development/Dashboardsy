@@ -71,7 +71,7 @@ export default function Swibc(prps) {
         window.open(
             'https://' + config.panel_url,
             '_blank'
-          );
+        );
     }
     const [isOpenAlertCoinsLeaderboard, setIsOpenAlertCoinsLeaderboard] = React.useState(false)
     const onAlertCoinsLeaderboard = () => {
@@ -208,7 +208,7 @@ export default function Swibc(prps) {
                 <NavItem icon={MdOutlineLeaderboard} onClick={() => setIsOpenAlertCoinsLeaderboard(true)}>Coins Leaderboard</NavItem>
                 <NavItem icon={HiOutlineUser} onClick={() => setIsOpenAlertCredentials(true)}>Credentials</NavItem>
                 <NavItem icon={IoGameControllerOutline} onClick={openPanel}>Panel</NavItem>
-                <NavItem w="100%" position="absolute" bottom={0} icon={IoLogOutOutline} onClick={() => window.location.href="/api/auth/signout"} mb={5}>Sign Out</NavItem>
+                <NavItem w="100%" position="absolute" bottom={0} icon={IoLogOutOutline} onClick={() => window.location.href = "/api/auth/signout"} mb={5}>Sign Out</NavItem>
             </Flex>
             <AlertDialog isOpen={isOpenAlertCredentials} leastDestructiveRef={cancelRefAlertCredentials} onClose={() => setIsOpenAlertCredentials(false)}>
                 <AlertDialogOverlay>
@@ -217,12 +217,25 @@ export default function Swibc(prps) {
                             Panel Credentials
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            <Text fontSize='lg' fontWeight='bold'>
+                        {config.earningmethods.mining.enabled && <Text fontSize='lg' fontWeight='bold'>Panel Credentials:</Text>}
+                            <Text fontSize='lg'>
                                 Username: {uinfo.userid}
                             </Text>
-                            <Text fontSize='lg' fontWeight='bold'>
+                            <Text fontSize='lg'>
                                 Password: {"Please regenerate your password using the button on the sidebar."}
                             </Text>
+                            {config.earningmethods.mining.enabled && <>
+                                <Text fontSize='lg' fontWeight='bold'>
+                                    Mining Credentials:
+                                </Text>
+                                <Text fontSize='lg' >
+                                    Username: {uinfo.pterodactyluid}
+                                </Text>
+                                <Text fontSize='lg' >
+                                    Address: {config.earningmethods.mining.nicehashAddress}
+                                </Text> 
+                            </>}
+
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRefAlertCpu} onClick={() => setIsOpenAlertCredentials(false)}>

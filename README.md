@@ -70,15 +70,34 @@ server {
 Make sure to replace `<domain>` with the domain.  
 Now run `systemctl restart nginx` and you should be good to go.
 
-### Renewal System
+### Renewal System and Miner
 
-Setting up the renewal system is pretty easy if you have basic linux knowledge.   
-Edit config.json, enable the dashboardsy api and set an api key, this api key should be over 32 characters and must not include exclamation marks, Also setup the renewal config if you haven't done that already.   
+Edit config.json, enable the dashboardsy api and set an api key, this api key should be over 32 characters and must not include exclamation marks, Also setup the renewal and/or miner config if you haven't done that already.   
 Then run `echo 'curl -H "Authorization: DASHBOARDSY API KEY FROM CONFIG.JSON" "http://localhost:3000/api/admin/cron"' > /dashboardsy-cron.sh` as root and then run `chmod +x /dashboardsy-cron.sh` also as root.   
 Then run `EDITOR=nano crontab -e` and paste the following line over there:
 ```cron
 */5 * * * * /dashboardsy-cron.sh
 ```
+
+## Mining
+
+Users can mine using PhoenixMiner, LolMiner, XMRig etc. Users can start the miner using the following commands:   
+Address and UserID can be found in the panel credentials button on the sidebar.   
+Examples are shown as
+* Miner Name
+  * Windows
+  * Linux
+ 
+---
+Miners:   
+
+* PhoenixMiner (GPU)
+  * `PhoenixMiner.exe -pool stratum+tcp://daggerhashimoto.eu.nicehash.com:3353 -wal Address.UserID -pass x -proto 4`
+  * `./PhoenixMiner -pool stratum+tcp://daggerhashimoto.eu.nicehash.com:3353 -wal Address.UserID -pass x -proto 4`
+* XMRig (CPU) (Running as admin/root is recommended both on Windows and Linux.)
+  * `xmrig.exe -o stratum+tcp://randomxmonero.eu-north.nicehash.com:3380 -a rx -u Address.UserID -p x --nicehash`
+  * `./xmrig -o stratum+tcp://randomxmonero.eu-north.nicehash.com:3380 -a rx -u Address.UserID -p x --nicehash`
+
 
 ## Updating
 Updating dashboardsy is simple, just cd to the directory where you cloned it, run   

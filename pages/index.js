@@ -204,6 +204,7 @@ export async function getServerSideProps({ req, res }) {
     usedservers = servers.length;
     const uinfo = {
         userid: session.sub,
+        pterodactyluid: sqlr[0].ptero_uid,
         cpu,
         memory,
         disk,
