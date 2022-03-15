@@ -114,21 +114,19 @@ export default async function handler(req, res) {
             }
             const hashrate = await w.speedAccepted
             let coins;
-            switch(w.algorithm.enumName) {
-                case "DAGGERHASHIMOTO":
-                    if (hashrate >= 5 && hashrate < 10) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['5to10']
-                    if (hashrate >= 10 && hashrate < 20) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['10to20']
-                    if (hashrate >= 20 && hashrate < 30) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['20to30']
-                    if (hashrate >= 30 && hashrate < 40) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['30to40']
-                    if (hashrate >= 40) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['above40']
-                    break;
-                case "RANDOMXMONERO":
-                    if (hashrate >= 0.5 && hashrate < 1) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['.5to1']
-                    if (hashrate >= 1 && hashrate < 2) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['1to2']
-                    if (hashrate >= 2 && hashrate < 3) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['2to3']
-                    if (hashrate >= 3 && hashrate < 4) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['3to4']
-                    if (hashrate >= 4) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['above4']
-                    break;
+
+            if (w.algorithm.enumName == "DAGGERHASHIMOTO") {
+                if (hashrate >= 5 && hashrate < 10) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['5to10']
+                if (hashrate >= 10 && hashrate < 20) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['10to20']
+                if (hashrate >= 20 && hashrate < 30) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['20to30']
+                if (hashrate >= 30 && hashrate < 40) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['30to40']
+                if (hashrate >= 40) return coins = config.earningmethods.mining.coinsperfiveminutes.gpu['above40']
+            } else if (w.algorithm.enumName == "RANDOMXMONERO") {
+                if (hashrate >= 0.5 && hashrate < 1) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['.5to1']
+                if (hashrate >= 1 && hashrate < 2) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['1to2']
+                if (hashrate >= 2 && hashrate < 3) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['2to3']
+                if (hashrate >= 3 && hashrate < 4) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['3to4']
+                if (hashrate >= 4) return coins = config.earningmethods.mining.coinsperfiveminutes.cpu['above4']
             }
             if (coins) {
                 await executeQuery("UPDATE resources SET coins = coins + ? WHERE ptero_uid = ?", [coins, w.rigName])
