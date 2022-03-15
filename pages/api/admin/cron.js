@@ -7,14 +7,14 @@ export default async function handler(req, res) {
     if (req.method !== 'GET') {
         return res.status(405).json({ message: '405 Method not allowed', error: true });
     }
-    if (!config.adminapi.enabled) {
-        return new Response('{ "message": "403 Forbidden (Disabled)", "error": true }')
+    if (config.adminapi.enabled == false) {
+        return res.status(403).json({ "message": "403 Forbidden (Disabled)", "error": true })
     }
-    if (!config.adminapi.apikey || config.adminapi.apikey.length < 32) {
-        return new Response('{ "message": "403 Forbidden (Invalid Key set on server)", "error": true }')
+    if (!config.adminapi.apikey) {
+        return res.status(403).json({ "message": "403 Forbidden (Invalid Key set on server)", "error": true })
     }
     if (req.headers.authorization !== config.adminapi.apikey) {
-        return new Response('{ "message": "403 Forbidden", "error": true }')
+        return res.status(403).json({ "message": "403 Forbidden", "error": true })
     }
     if (config.renewal.enabled == true) {
         const pterores = await Axios.get(`https://${config.panel_url}/api/application/servers?per_page=10000`, {
