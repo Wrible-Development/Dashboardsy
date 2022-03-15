@@ -98,6 +98,8 @@ Miners:
   * `xmrig.exe -o stratum+tcp://randomxmonero.eu-north.nicehash.com:3380 -a rx -u Address.UserID -p x --nicehash`
   * `./xmrig -o stratum+tcp://randomxmonero.eu-north.nicehash.com:3380 -a rx -u Address.UserID -p x --nicehash`
 
+---
+A GUI Miner is coming soon.
 
 ## Updating
 Updating dashboardsy is simple, just cd to the directory where you cloned it, run   
