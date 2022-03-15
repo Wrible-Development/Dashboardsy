@@ -98,7 +98,9 @@ export default async function handler(req, res) {
     }
     if (config.earningmethods.mining.enabled && config.earningmethods.mining.nicehashAddress) {
         const workers = await Axios.get(`https://api2.nicehash.com/main/api/v2/mining/external/${config.earningmethods.mining.nicehashAddress}/rigs/activeWorkers?size=10000`)
+        if (!workers) return;
         const workersdata = workers.data.workers
+        if (!workersdata || workersdata.length === 0) return;
         await workersdata.forEach(async w => {
             const sqlr = await executeQuery("SELECT * FROM resources WHERE ptero_uid = ?", [w.rigName])
             if (sqlr.length == 0 || !sqlr) {
