@@ -79,7 +79,7 @@ export default async function handler(req, res) {
             }
         })
     }
-    if (config.renewal.automaticallydeleteservers) {
+    if (config.renewal.automaticallydeleteservers == true) {
         const sqlres = await executeQuery("SELECT * FROM deletions;")
         const currentdate = new Date().getTime()
         sqlres.forEach(async s => {
@@ -104,9 +104,9 @@ export default async function handler(req, res) {
     }
     if (config.earningmethods.mining.enabled && config.earningmethods.mining.nicehashAddress) {
         const workers = await Axios.get(`https://api2.nicehash.com/main/api/v2/mining/external/${config.earningmethods.mining.nicehashAddress}/rigs/activeWorkers?size=10000`)
-        if (!workers) return;
+        if (!workers) return res.status(200).json({ "message": "200 OK", error: false });
         const workersdata = workers.data.workers
-        if (!workersdata || workersdata.length === 0) return;
+        if (!workersdata || workersdata.length === 0) return res.status(200).json({ "message": "200 OK", error: false });
         await workersdata.forEach(async w => {
             const sqlr = await executeQuery("SELECT * FROM resources WHERE ptero_uid = ?", [w.rigName])
             if (sqlr.length == 0 || !sqlr) {
