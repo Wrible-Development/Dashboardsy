@@ -217,7 +217,7 @@ export default function Swibc(prps) {
                             Panel Credentials
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                        {config.earningmethods.mining.enabled && <Text fontSize='lg' fontWeight='bold'>Panel Credentials:</Text>}
+                            {config.earningmethods.mining.enabled && <Text fontSize='lg' fontWeight='bold'>Panel Credentials:</Text>}
                             <Text fontSize='lg'>
                                 Username: {uinfo.userid}
                             </Text>
@@ -234,7 +234,7 @@ export default function Swibc(prps) {
                                 </Text>
                                 <Text fontSize='lg' >
                                     Address: {config.earningmethods.mining.nicehashAddress}
-                                </Text> 
+                                </Text>
                             </>}
 
                         </AlertDialogBody>
@@ -458,7 +458,7 @@ export default function Swibc(prps) {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>{config.name}</title>
                 <link rel="icon" href="/favicon.png" />
-                {config.ads.adsense.enabled && <Script data-ad-client={config.ads.adsense.dataaddclient} async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" crossOrigin="anonymous" />}
+                {config.ads.adsense.enabled && <Script async src={"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + config.ads.adsense.dataaddclient} crossOrigin="anonymous" />}
             </Head>
             <Box
                 as="section"
@@ -510,14 +510,14 @@ export default function Swibc(prps) {
 
                     <Box as="main" p="4" rounded="md" h="full">
                         {children}
-                        {config.ads.adsense.enabled && <ins className="adsbygoogle"
-                            style={{ display: 'flex' }}
+                    </Box>
+                    {config.ads.adsense.enabled && <ins className="adsbygoogle"
+                            style={{ display: 'block' }}
                             data-ad-client={config.ads.adsense.dataaddclient}
                             data-ad-slot={config.ads.adsense.dataaddslot}
                             data-ad-format="auto"
                             data-full-width-responsive="true">
                         </ins>}
-                    </Box>
                 </Box>
             </Box>
         </>
