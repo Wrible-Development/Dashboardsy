@@ -505,7 +505,7 @@ export default function Swibc(prps) {
                         {children}
                         {config.ads.adsense.enabled && <GoogleAd format="fluid" />}
                     </Box>
-                    <Box display="fixed" w="90%" position="fixed" bottom="0" justifySelf="center" alignSelf="center" h={100}>
+                    <Box display="flex" w="90%" position="fixed" bottom="0" justifySelf="center" alignSelf="center" h={100}>
                         {config.ads.adsense.enabled && <GoogleAd format="horizontal" />}
                     </Box>
                 </Box>
