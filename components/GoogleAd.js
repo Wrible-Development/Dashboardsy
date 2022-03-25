@@ -13,6 +13,7 @@ export default class Google extends React.Component {
                 data-ad-client={config.ads.adsense.dataaddclient}
                 data-ad-slot={config.ads.adsense.dataaddslot}
                 data-ad-format={this.props.format || "auto"}
+                data-ad-layout={this.props.layout || "in-article"}
                 data-full-width-responsive="true">
             </ins>
         );
