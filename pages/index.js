@@ -141,6 +141,7 @@ export default function index(pgProps) {
         }
     }
     return (
+        <Box bg={"gray.700"}>
         <Layout {...pgProps} buyItemFunc={buyItemFunc} regenPass={regenPass} uinfo={uinfo} createServerFunc={createServerFunc} notify={notify}>
             <Heading align="center">Howdy {username}!</Heading>
             {isMobile ? <Flex direction={"column"} justifyContent={"center"} alignItems={"center"}>
@@ -163,6 +164,7 @@ export default function index(pgProps) {
             <Table data={servers.map(s => JSON.stringify({ name: s.attributes.name, id: s.attributes.id, identifier: s.attributes.identifier, limits: s.attributes.limits }))} deleteServerFunc={deleteServerFunc} uinfo={uinfo} editServerFunc={editServerFunc} setMemory={setMemory} setCpu={setCpu} setDisk={setDisk} setServerid={setServerid} renewalservers={renewalservers} deletionservers={deletionservers} />
             <ToastContainer />
         </Layout>
+        </Box>
     )
 }
 
