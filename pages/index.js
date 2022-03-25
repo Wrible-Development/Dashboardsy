@@ -1,6 +1,6 @@
 import { getToken } from "next-auth/jwt"
 import { executeQuery, getServers, getCoinsLeaderboard } from "../db"
-import { Heading, Flex } from '@chakra-ui/react'
+import { Heading, Flex, Box } from '@chakra-ui/react'
 import Card from '../components/Card'
 import useIsTouchDevice from '../lib/useIsTouchDevice'
 import Table from '../components/Table'
@@ -142,28 +142,28 @@ export default function index(pgProps) {
     }
     return (
         <Box bg={"gray.700"}>
-        <Layout {...pgProps} buyItemFunc={buyItemFunc} regenPass={regenPass} uinfo={uinfo} createServerFunc={createServerFunc} notify={notify}>
-            <Heading align="center">Howdy {username}!</Heading>
-            {isMobile ? <Flex direction={"column"} justifyContent={"center"} alignItems={"center"}>
-                <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
-                    <Card property={"CPU Limit"} description={uinfo.used.cpu + "/" + uinfo.cpu} my="4" size={145} />
-                    <Card property={"Memory Limit"} description={uinfo.used.memory + "/" + uinfo.memory} my="4" size={145} />
-                </Flex>
-                <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
-                    <Card property={"Disk Limit"} description={uinfo.used.disk + "/" + uinfo.disk} my="4" size={145} />
-                    <Card property={"Server Limit"} description={uinfo.used.serverlimit + "/" + uinfo.serverlimit} my="4" size={145} />
-                </Flex>
-            </Flex> :
-                <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
-                    <Card property={"CPU Limit"} description={uinfo.used.cpu + "/" + uinfo.cpu} my="4" size={300} />
-                    <Card property={"Memory Limit"} description={uinfo.used.memory + "/" + uinfo.memory} my="4" size={300} />
-                    <Card property={"Disk Limit"} description={uinfo.used.disk + "/" + uinfo.disk} my="4" size={300} />
-                    <Card property={"Server Limit"} description={uinfo.used.serverlimit + "/" + uinfo.serverlimit} my="4" size={300} />
-                </Flex>
-            }
-            <Table data={servers.map(s => JSON.stringify({ name: s.attributes.name, id: s.attributes.id, identifier: s.attributes.identifier, limits: s.attributes.limits }))} deleteServerFunc={deleteServerFunc} uinfo={uinfo} editServerFunc={editServerFunc} setMemory={setMemory} setCpu={setCpu} setDisk={setDisk} setServerid={setServerid} renewalservers={renewalservers} deletionservers={deletionservers} />
-            <ToastContainer />
-        </Layout>
+            <Layout {...pgProps} buyItemFunc={buyItemFunc} regenPass={regenPass} uinfo={uinfo} createServerFunc={createServerFunc} notify={notify}>
+                <Heading align="center">Howdy {username}!</Heading>
+                {isMobile ? <Flex direction={"column"} justifyContent={"center"} alignItems={"center"}>
+                    <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
+                        <Card property={"CPU Limit"} description={uinfo.used.cpu + "/" + uinfo.cpu} my="4" size={145} />
+                        <Card property={"Memory Limit"} description={uinfo.used.memory + "/" + uinfo.memory} my="4" size={145} />
+                    </Flex>
+                    <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
+                        <Card property={"Disk Limit"} description={uinfo.used.disk + "/" + uinfo.disk} my="4" size={145} />
+                        <Card property={"Server Limit"} description={uinfo.used.serverlimit + "/" + uinfo.serverlimit} my="4" size={145} />
+                    </Flex>
+                </Flex> :
+                    <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
+                        <Card property={"CPU Limit"} description={uinfo.used.cpu + "/" + uinfo.cpu} my="4" size={300} />
+                        <Card property={"Memory Limit"} description={uinfo.used.memory + "/" + uinfo.memory} my="4" size={300} />
+                        <Card property={"Disk Limit"} description={uinfo.used.disk + "/" + uinfo.disk} my="4" size={300} />
+                        <Card property={"Server Limit"} description={uinfo.used.serverlimit + "/" + uinfo.serverlimit} my="4" size={300} />
+                    </Flex>
+                }
+                <Table data={servers.map(s => JSON.stringify({ name: s.attributes.name, id: s.attributes.id, identifier: s.attributes.identifier, limits: s.attributes.limits }))} deleteServerFunc={deleteServerFunc} uinfo={uinfo} editServerFunc={editServerFunc} setMemory={setMemory} setCpu={setCpu} setDisk={setDisk} setServerid={setServerid} renewalservers={renewalservers} deletionservers={deletionservers} />
+                <ToastContainer />
+            </Layout>
         </Box>
     )
 }
