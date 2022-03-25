@@ -501,7 +501,7 @@ export default function Swibc(prps) {
                         </Flex>
                     </Flex>
 
-                    <Box as="main" p="4" rounded="md" h="full" bg={useColorModeValue("gray.50", "gray.700")}>
+                    <Box as="main" p="4" rounded="md" h="full">
                         {children}
                         {config.ads.adsense.enabled && <GoogleAd />}
                     </Box>
