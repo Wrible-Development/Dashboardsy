@@ -9,7 +9,7 @@ export default class Google extends React.Component {
     render() {
         return (
             <ins className="adsbygoogle"
-                style={{ display: 'block', justifySelf: 'center', alignSelf: 'center' }}
+                style={{ display: 'block', justifySelf: 'center', alignSelf: 'center', margin: "10px" }}
                 data-ad-client={config.ads.adsense.dataaddclient}
                 data-ad-slot={config.ads.adsense.dataaddslot}
                 data-ad-format="auto"
