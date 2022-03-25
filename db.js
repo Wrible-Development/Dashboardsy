@@ -48,7 +48,7 @@ export async function getCoinsLeaderboard() {
   if (ifcacheexists != false) {
     return ifcacheexists;
   }
-  const clb = await executeQuery("SELECT * FROM resources ORDER BY coins DESC LIMIT 10;")
+  const clb = await executeQuery("SELECT * FROM resources ORDER BY CAST(coins as INT) DESC LIMIT 10;")
   const coinslb = clb.map(r => JSON.parse(JSON.stringify(r)))
   setCache('coinsleaderboard', coinslb, 300);
   return coinslb;
