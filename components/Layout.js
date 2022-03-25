@@ -40,7 +40,6 @@ import {
     Collapse,
     Divider
 } from "@chakra-ui/react";
-import Head from 'next/head'
 import { FaMemory } from "react-icons/fa";
 import { BsFillCpuFill } from "react-icons/bs";
 import { FiMenu, FiServer } from "react-icons/fi";
@@ -51,14 +50,14 @@ import { IoHomeOutline, IoLogOutOutline, IoGameControllerOutline } from 'react-i
 import { HiOutlineUser } from 'react-icons/hi'
 import React from "react";
 import config from '../config.json'
-import Script from 'next/script'
+import GoogleAd from './GoogleAd';
+
 
 export default function Swibc(prps) {
     const sidebar = useDisclosure();
     let sname, mem, cpu, disk, egg, loc;
     const integrations = useDisclosure();
     const { username, avatar, children, createServerFunc, buyItemFunc, regenPass, uinfo, notify, coinsleaderboard } = prps;
-    config.ads.adsense.enabled ? React.useEffect(() => { (window.adsbygoogle = window.adsbygoogle || []).push({}); }, []) : null
     const { isOpen: isOpenCS, onOpen: onOpenCS, onClose: onCloseCS } = useDisclosure()
     const finalRefCS = React.useRef()
     const handleChangeServerName = (event) => sname = event.target.value
@@ -454,12 +453,6 @@ export default function Swibc(prps) {
     );
     return (
         <>
-            <Head>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>{config.name}</title>
-                <link rel="icon" href="/favicon.png" />
-                {config.ads.adsense.enabled && <Script async src={"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + config.ads.adsense.dataaddclient} crossOrigin="anonymous" />}
-            </Head>
             <Box
                 as="section"
                 bg={useColorModeValue("gray.50", "gray.700")}
@@ -511,13 +504,7 @@ export default function Swibc(prps) {
                     <Box as="main" p="4" rounded="md" h="full">
                         {children}
                     </Box>
-                    {config.ads.adsense.enabled && <ins className="adsbygoogle"
-                            style={{ display: 'block' }}
-                            data-ad-client={config.ads.adsense.dataaddclient}
-                            data-ad-slot={config.ads.adsense.dataaddslot}
-                            data-ad-format="auto"
-                            data-full-width-responsive="true">
-                        </ins>}
+                    {config.ads.adsense.enabled && <GoogleAd />}
                 </Box>
             </Box>
         </>
