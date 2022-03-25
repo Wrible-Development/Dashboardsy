@@ -503,7 +503,7 @@ export default function Swibc(prps) {
 
                     <Box as="main" p="4" rounded="md" h="full">
                         {children}
-                        {config.ads.adsense.enabled && <GoogleAd format="horizontal"/>}
+                        {config.ads.adsense.enabled && <GoogleAd format="fluid"/>}
                     </Box>
                 </Box>
             </Box>
