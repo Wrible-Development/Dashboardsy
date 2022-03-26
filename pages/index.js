@@ -143,11 +143,11 @@ export default function index(pgProps) {
     if (config.ads.antiadblock === true) {
         const isAdBlocker = useCheckAdBlocker();
         if (isAdBlocker === true) return (
-            <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" m="auto" bg={"gray.700"} color="gray.100">
+            <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" m="auto" bg={"gray.700"} color="gray.100" h={"full"} w="full">
                 <Heading align="center">
                     Please disable your adblocker to use this site.
                 </Heading>
-                <Button onClick={() => window.location.reload} colorScheme={"gray"}>I have disabled my adblocker!</Button>
+                <Button onClick={() => window.location.reload()} colorScheme={"gray"}>I have disabled my adblocker!</Button>
             </Box>
         )
     }
