@@ -103,6 +103,7 @@
       "discordwebhookurl": ""
    },
    "ads": {
+      "antiadblock": false,
       "adsense": {
          "enabled": false,
          "dataaddclient": "",

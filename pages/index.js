@@ -1,6 +1,6 @@
 import { getToken } from "next-auth/jwt"
 import { executeQuery, getServers, getCoinsLeaderboard } from "../db"
-import { Heading, Flex, Box } from '@chakra-ui/react'
+import { Heading, Flex, Box, Button } from '@chakra-ui/react'
 import Card from '../components/Card'
 import useIsTouchDevice from '../lib/useIsTouchDevice'
 import Table from '../components/Table'
@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
 import Layout from '../components/Layout';
-import Axios from 'axios';
+import useCheckAdBlocker from "../lib/useCheckAdBlocker"
 
 export default function index(pgProps) {
     const { username, avatar, servers, uinfo, renewalservers, deletionservers, coinsleaderboard } = pgProps;
@@ -140,6 +140,18 @@ export default function index(pgProps) {
             return notify("Your new password is:  " + res.data.password, "password")
         }
     }
+    if (config.ads.antiadblock === true) {
+        const isAdBlocker = useCheckAdBlocker();
+        if (isAdBlocker === true) return (
+            <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" m="auto" bg={"gray.700"} color="gray.100">
+                <Heading align="center">
+                    Please disable your adblocker to use this site.
+                </Heading>
+                <Button onClick={() => window.location.reload} colorScheme={"gray"}>I have disabled my adblocker!</Button>
+            </Box>
+        )
+    }
+
     return (
         <Box bg={"gray.700"}>
             <Layout {...pgProps} buyItemFunc={buyItemFunc} regenPass={regenPass} uinfo={uinfo} createServerFunc={createServerFunc} notify={notify}>
