@@ -148,7 +148,7 @@ export default function index(pgProps) {
                 <Heading align="center">
                     Please disable your adblocker to use this site.
                 </Heading>
-                <Button onClick={() => window.location.reload()} colorScheme={"gray"}>I have disabled my adblocker!</Button>
+                <Button onClick={() => window.location.reload()} colorScheme={"gray"} mt={10}>I have disabled my adblocker!</Button>
             </Box>
             </Box>
         )
