@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         }
     }).catch(e => console.error(e.response.data.errors));
     if (!resd) {
-        return res.status(500).json({ message: '500 Internal Server Error', error: true });
+        return res.status(500).json({ message: 'No nodes satisfying the requirements specified for automatic deployment could be found. (No slots are available).', error: true });
     }
     if (resd.status !== 200 && resd.status !== 201) {
         return res.status(resd.status).json({ message: `${resd.status} Error!`, error: true });
