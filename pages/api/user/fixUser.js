@@ -29,7 +29,7 @@ export default async function handler(req, res) {
                 "Authorization": `Bearer ${config.panel_apikey}`
             }
     });
-    if (checkIfAccountExistsOnPterodactyl.data.data[0].attributes.email === session.email) {
+    if (checkIfAccountExistsOnPterodactyl?.data?.data[0]?.attributes.email === session.email) {
         const pterouid = checkIfAccountExistsOnPterodactyl.data.data[0].attributes.id;
         const somql = await executeQuery("INSERT INTO resources (uid, cpu, memory, disk, coins, serverlimit, ptero_uid) VALUES (?, ?, ?, ?, ?, ?, ?)", [session.sub, config.packages.default.cpu, config.packages.default.memory, config.packages.default.disk, 0, config.packages.default.serverlimit, pterouid]);
         if (somql == false) {
