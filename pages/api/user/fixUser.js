@@ -22,6 +22,22 @@ export default async function handler(req, res) {
     if (sqlr.length !== 0) {
         return res.redirect("/");
     }
+    const checkIfAccountExistsOnPterodactyl = await Axios.get(`https://${config.panel_url}/api/application/users?filter[email]=${encodeURIComponent(session.email)}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${config.panel_apikey}`
+            }
+    });
+    if (checkIfAccountExistsOnPterodactyl.data.data[0].attributes.email === session.email) {
+        const pterouid = checkIfAccountExistsOnPterodactyl.data.data[0].attributes.id;
+        const somql = await executeQuery("INSERT INTO resources (uid, cpu, memory, disk, coins, serverlimit, ptero_uid) VALUES (?, ?, ?, ?, ?, ?, ?)", [session.sub, config.packages.default.cpu, config.packages.default.memory, config.packages.default.disk, 0, config.packages.default.serverlimit, pterouid]);
+        if (somql == false) {
+            return res.status(500).json({ message: '500 Internal Server Error', error: true });
+        }
+        await sendLog("Create New User", session, `User already had an account on pterodactyl (probably subuser).`)
+        return res.redirect("/")
+    }
     const pterores = await Axios.post(`https://${config.panel_url}/api/application/users`, {
         "email": session.email,
         "username": session.sub,

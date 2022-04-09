@@ -83,7 +83,7 @@ export default async function handler(req, res) {
             "Authorization": `Bearer ${config.panel_apikey}`
         }
     }).catch(e => console.error(e.response.data.errors));
-    if (!resd) {
+     if (!resd) {
         return res.status(500).json({ message: 'No nodes satisfying the requirements specified for automatic deployment could be found. (No slots are available).', error: true });
     }
     if (resd.status !== 200 && resd.status !== 201) {
