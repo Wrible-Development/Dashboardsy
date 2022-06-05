@@ -342,7 +342,7 @@ export default function Swibc(prps) {
                     <ModalBody>
                         <FormControl isRequired >
                             <FormLabel htmlFor="servername">Name of the server:</FormLabel>
-                            <Input placeholder='Server Name' size='md' name="servername" id="servername" onChange={handleChangeServerName} />
+                            <Input placeholder='Server Name' type="text" size='md' name="servername" id="servername" onChange={handleChangeServerName} />
                         </FormControl>
                         <FormControl isRequired >
                             <FormLabel htmlFor="memoryinput">Amount of Memory:</FormLabel>
