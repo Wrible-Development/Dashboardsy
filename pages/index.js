@@ -1,249 +1,77 @@
-import { getToken } from "next-auth/jwt"
-import { executeQuery, getServers, getCoinsLeaderboard } from "../db"
-import { Heading, Flex, Box, Button } from '@chakra-ui/react'
-import Card from '../components/Card'
-import useIsTouchDevice from '../lib/useIsTouchDevice'
-import Table from '../components/Table'
-import config from '../config.json';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useState } from 'react';
-import Layout from '../components/Layout';
-import useCheckAdBlocker from "../lib/useCheckAdBlocker"
+import { executeQuery } from "../db"
+import React, { useState } from 'react';
+import useCheckAdBlocker from "../hooks/useCheckAdBlocker"
+import ResourceBox from '../components/ResourceBox'
+import Navbar from '../components/Navbar'
+import useTheme from '../hooks/useTheme'
+import ServersTable from '../components/ServersTable'
+import GoogleAd from '../components/GoogleAd'
+import { withSessionSsr } from '../lib/session'
 
-export default function index(pgProps) {
-    const { username, avatar, servers, uinfo, renewalservers, deletionservers, coinsleaderboard } = pgProps;
-    const isMobile = useIsTouchDevice()
-    const [memory, setMemory] = useState(false);
-    const [disk, setDisk] = useState(false);
-    const [cpu, setCpu] = useState(false);
-    const [serverid, setServerid] = useState(false);
-    async function editServerFunc(e) {
-        e.preventDefault();
-        const resources = {
-            memory: memory,
-            disk: disk,
-            cpu: cpu
-        }
-        const s = await fetch("/api/user/editServer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            body: JSON.stringify({
-                serverid: serverid,
-                resources: resources
-            })
-        })
-        const res = await s.json();
-        if (s.status !== 200) {
-            return notify("An error occurred: " + res.message, true);
-        } else {
-            return notify("Sucessfully edited server", false)
-        }
-    }
-    function notify(msg, err) {
-        if (err == true) {
-            toast.error(msg, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-            });
-        } else if (err === "password") {
-            toast.info(msg, {
-                position: "bottom-right",
-                autoClose: 30000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: false
-            });
-        } else {
-            toast.success(msg, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-            });
-        }
-    }
-    async function createServerFunc(sname, egg, loc, disk, memory, cpu) {
-        const s = await fetch("/api/user/createServer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            body: JSON.stringify({
-                sname: sname,
-                resources: {
-                    disk: disk,
-                    memory: memory,
-                    cpu: cpu,
-                    egg: egg,
-                    location: loc,
-                }
-            })
-        })
-        const res = await s.json();
-        if (s.status !== 200) {
-            return notify("An error occurred: " + res.message, true);
-        }
-        return notify("Sucessfully created server. Please wait a while or refresh to see it here.", false)
-    }
-    async function buyItemFunc(event, item, quantity) {
-        const s = await fetch("/api/user/shop", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            body: JSON.stringify({
-                resource: { name: item, quantity: quantity }
-            })
-        })
-        const res = await s.json();
-        if (s.status != 200) {
-            return notify("An error occurred: " + res.message, true);
-        } else {
-            return notify("Sucessfully added resources!", false)
-        }
-    }
-    async function deleteServerFunc() {
-        const s = await fetch("/api/user/deleteServer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ serverid: serverid })
-        })
-        const res = await s.json();
-        if (s.status !== 200) {
-            return notify("An error occurred: " + res.message, true);
-        } else {
-            return notify("Server deleted successfully", false)
-        }
-    }
-    async function regenPass() {
-        const s = await fetch("/api/user/regenPass", {
-            method: "GET",
-        })
-        const res = await s.json();
-        if (s.status !== 200) {
-            return notify("An error occurred: " + res.message, true);
-        } else {
-            return notify("Your new password is:  " + res.data.password, "password")
-        }
-    }
-    if (config.ads.antiadblock === true) {
+export default function index({ user, config, userInfo }) {
+    const [theme, setTheme] = useTheme();
+    if (config.antiadblock == true || config.antiadblock == 1) {
         const isAdBlocker = useCheckAdBlocker();
         if (isAdBlocker === true) return (
-            <Box h={"100vh"} w={"100vw"}>
-            <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column" m="auto" bg={"gray.700"} color="gray.100" h={"full"} w="full">
-                <Heading align="center">
-                    Please disable your adblocker to use this site.
-                </Heading>
-                <Button onClick={() => window.location.reload()} colorScheme={"gray"} mt={10}>I have disabled my adblocker!</Button>
-            </Box>
-            </Box>
+            <div className="h-screen w-full flex justify-center items-center text-center bg-black flex-col">
+                <div>
+                    <h1 className="text-white text-3xl my-2">Adblocker detected</h1>
+                    <h2 className="text-white text-2xl my-2">Please disable your adblocker and reload the page</h2>
+                    <button onClick={() => window.location.reload()} className="bg-[#5865F2] hover:bg-blue-700 text-white font-bold py-3 px-5 rounded mt-6 text-xl">Reload</button>
+                </div>
+            </div>
         )
     }
 
     return (
-        <Box bg={"gray.700"}>
-            <Layout {...pgProps} buyItemFunc={buyItemFunc} regenPass={regenPass} uinfo={uinfo} createServerFunc={createServerFunc} notify={notify}>
-                <Heading align="center">Howdy {username}!</Heading>
-                {isMobile ? <Flex direction={"column"} justifyContent={"center"} alignItems={"center"}>
-                    <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
-                        <Card property={"CPU Limit"} description={uinfo.used.cpu + "/" + uinfo.cpu} my="4" size={145} />
-                        <Card property={"Memory Limit"} description={uinfo.used.memory + "/" + uinfo.memory} my="4" size={145} />
-                    </Flex>
-                    <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
-                        <Card property={"Disk Limit"} description={uinfo.used.disk + "/" + uinfo.disk} my="4" size={145} />
-                        <Card property={"Server Limit"} description={uinfo.used.serverlimit + "/" + uinfo.serverlimit} my="4" size={145} />
-                    </Flex>
-                </Flex> :
-                    <Flex direction={"row"} justifyContent={"center"} alignItems={"center"}>
-                        <Card property={"CPU Limit"} description={uinfo.used.cpu + "/" + uinfo.cpu} my="4" size={300} />
-                        <Card property={"Memory Limit"} description={uinfo.used.memory + "/" + uinfo.memory} my="4" size={300} />
-                        <Card property={"Disk Limit"} description={uinfo.used.disk + "/" + uinfo.disk} my="4" size={300} />
-                        <Card property={"Server Limit"} description={uinfo.used.serverlimit + "/" + uinfo.serverlimit} my="4" size={300} />
-                    </Flex>
-                }
-                <Table data={servers.map(s => JSON.stringify({ name: s.attributes.name, id: s.attributes.id, identifier: s.attributes.identifier, limits: s.attributes.limits }))} deleteServerFunc={deleteServerFunc} uinfo={uinfo} editServerFunc={editServerFunc} setMemory={setMemory} setCpu={setCpu} setDisk={setDisk} setServerid={setServerid} renewalservers={renewalservers} deletionservers={deletionservers} />
-                <ToastContainer />
-            </Layout>
-        </Box>
+        <div className="h-screen w-full flex text-center bg-white dark:bg-[#33404d] flex-col text-gray-900 dark:text-white">
+            {user.isverified ? <div className="flex flex-row px-6 py-4 lg:px-8 xl:px-12 2xl:px-14 justify-center">
+                Please check your email and verify your account
+            </div> : null
+            }
+            <Navbar theme={theme} setTheme={setTheme} isDark={theme == "dark"} config={config} user={user} />
+            <div className="resources grid grid-cols-2 md:grid-cols-3 mt-8 mx-2 md:mx-5 xl:mx-6 3xl:mx-10">
+                <ResourceBox name="Total credits" value={`${userInfo.credits} Credits`} />
+                <ResourceBox name="Cost per day" value={"500 Credits"} />
+                <div className="col-span-2 md:col-auto">
+                    <ResourceBox name="Servers" value={"10"} />
+                </div>
+            </div>
+            <div className="mt-8 mx-2 md:mx-5 xl:mx-6 3xl:mx-10">
+                <ServersTable />
+            </div>
+            {config.adsenseclient && config.adsenseslot && <GoogleAd slot={config.adsenseslot} client={config.adsenseclient} />}
+        </div>
     )
 }
 
-
-export async function getServerSideProps({ req, res }) {
-    const session = await getToken({
-        req,
-        secret: process.env.SECRET_COOKIE_PASSWORD,
-        secureCookie: process.env.NEXTAUTH_URL.startsWith('https://')
-    })
-    const username = session.name;
-    const avatar = session.picture;
-    const sqlr = await executeQuery("SELECT * FROM resources WHERE uid = ?", [session.sub]);
-    if (sqlr == false || sqlr.length == 0) {
+export const getServerSideProps = withSessionSsr(
+    async function getServerSideProps({ req }) {
+        const user = req?.session?.user;
+        const rawCfg = await executeQuery("SELECT hostname, adsenseclient, adsenseslot, antiadblock FROM config;")
+        if (!rawCfg || rawCfg.length == 0) {
+            if (user?.isadmin) {
+                return {
+                    redirect: {
+                        permanent: false,
+                        destination: "/admin/"
+                    }
+                }
+            } else {
+                return {
+                    notFound: true
+                }
+            }
+        }
+        const config = JSON.parse(JSON.stringify(rawCfg[0]))
+        const userInfo = JSON.parse(JSON.stringify((await executeQuery("SELECT credits FROM users WHERE id = ?;", [user.id]))[0]))
         return {
-            redirect: {
-                destination: "/api/user/fixUser",
-                permanent: true
+            props: {
+                user: user || null,
+                config: config,
+                pageName: "Home",
+                userInfo: userInfo
             }
         }
     }
-    const sqlrused = await executeQuery("SELECT * FROM usedresources WHERE uid = ?", [session.sub]);
-    let usedcpu, usedmemory, useddisk;
-    let usedservers;
-    if (sqlrused === false || sqlrused.length === 0) {
-        usedcpu = 0;
-        usedmemory = 0;
-        useddisk = 0;
-    } else {
-        usedcpu = sqlrused[0].cpu;
-        usedmemory = sqlrused[0].memory;
-        useddisk = sqlrused[0].disk;
-    }
-    const servers = await getServers(session.sub);
-    const cpu = sqlr[0].cpu;
-    const memory = sqlr[0].memory;
-    const disk = sqlr[0].disk;
-    const serverlimit = sqlr[0].serverlimit;
-    usedservers = servers.length;
-    const uinfo = {
-        userid: session.sub,
-        pterodactyluid: sqlr[0].ptero_uid,
-        cpu,
-        memory,
-        disk,
-        serverlimit,
-        coins: sqlr[0].coins,
-        used: {
-            cpu: usedcpu,
-            memory: usedmemory,
-            disk: useddisk,
-            serverlimit: usedservers
-        },
-        unused: {
-            cpu: cpu - usedcpu,
-            memory: memory - usedmemory,
-            disk: disk - useddisk
-        }
-    }
-    const rs = await executeQuery("SELECT * FROM renewals WHERE uid = ?", [session.sub])
-    const renewalservers = rs.map(r => JSON.parse(JSON.stringify(r)))
-    const ds = await executeQuery("SELECT * FROM deletions WHERE uid = ?", [session.sub])
-    const deletionservers = ds.map(r => JSON.parse(JSON.stringify(r)))
-    const coinsleaderboard = await getCoinsLeaderboard()
-    return {
-        props: { username, avatar, servers, uinfo, renewalservers, deletionservers, coinsleaderboard },
-    }
-}
+) 

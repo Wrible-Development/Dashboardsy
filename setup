@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+GREEN=$(printf "\e[32m")
+NC=$(printf "\e[0m")
+BOLD=$(printf "\e[1m")
+UNDERLINE=$(printf "\e[4m")
+askquestion() {
+    question=$1
+    answervar=$2
+    leaveline=""
+    read ${3} -r -p "${BOLD}${question}${NC}${GREEN}" "${answervar?}"
+    if [[ "${3}" == "-s" ]]; then
+        leaveline="\n"
+    fi
+    printf "%s${leaveline}" "$NC"
+}
+case "$1" in
+configure)
+    askquestion "Enter your mariadb database name: " MARIADBDBNAME
+    askquestion "Enter the application name: " NAMEOFHOST
+    askquestion "What's the url of your pterodactyl panel (with https:// or http://)? " PTERODACTYLPANELURL
+    askquestion "Enter the admin api key of your pterodactyl panel: " PTERODACTYLPANELADMINKEY
+    askquestion "What's your nicehash address (leave empty if you want to disable mining)? " NICEHASHADDRESSFILE
+    askquestion "Enter a discord webhook url, this will be used to send audit logs (leave empty if you want to disable) " DCWEBHOOKURL
+    askquestion "Do you want to enable google adsense? (Y/N) " ADSENSEENABLED
+    ANTIADBLOCKENABLED=0
+    case "$ADSENSEENABLED" in
+    y | Y | Yes | yes)
+        askquestion "Enter your google adsense client ID " ADSENSECLIENTID
+        askquestion "Enter your google adsense slot ID " ADSENSESLOTID
+        askquestion "Do you want to enable anti ad block? (Y/N) " ANTIADBLOCKENABLED
+        case "$ANTIADBLOCKENABLED" in
+        y | Y | Yes | yes)
+            ANTIADBLOCKENABLED=1
+            ;;
+        esac
+        ;;
+    esac
+    echo "INSERT INTO config (hostname, panel_url, pterodactylapikey, nicehashAddress, auditlogsurl, adsenseclient, adsenseslot, antiadblock) VALUES (\"${NAMEOFHOST}\", \"${PTERODACTYLPANELURL}\", \"${PTERODACTYLPANELADMINKEY}\", \"${NICEHASHADDRESSFILE}\", \"${DCWEBHOOKURL}\", \"${ADSENSECLIENTID}\", \"${ADSENSESLOTID}\", ${ANTIADBLOCKENABLED})" | mariadb "${MARIADBDBNAME}"
+    ;;
+environment)
+    if [[ ! -f "./.env" ]]; then
+        touch .env
+    fi
+    askquestion "Enter your mariadb username: " MARIADBUSERNAME
+    askquestion "Enter your mariadb password: " MARIADBPASSWORD -s
+    askquestion "Enter your mariadb database name: " MARIADBDBNAME
+    askquestion "Enter your mariadb host (ip/domain): " MARIADBHOST
+    askquestion "Application URL (must start with https:// or http://): " APP_URL
+    echo -e "SECRET_COOKIE_PASSWORD=$(tr -dc 'A-Za-z0-9!"#$%&' </dev/urandom | head -c 128)\nMYSQL_HOST=${MARIADBHOST}\nMYSQL_USER=${MARIADBUSERNAME}\nMYSQL_DATABASE=${MARIADBDBNAME}\nMYSQL_PASSWORD=${MARIADBPASSWORD}\nAPP_URL=${APP_URL}" > .env
+    ;;
+database)
+    askquestion "Enter your mariadb database name: " MARIADBDBNAME
+    echo "Creating tables..."
+    mariadb "${MARIADBDBNAME}" < setup.sql
+    echo "Done"
+    ;;
+mail)
+    if [[ ! -f "./.env" ]]; then
+        echo "Please run the environment command first."
+        exit 1
+    fi
+    askquestion "Enter your SMTP Host: " SMTP_HOST
+    askquestion "Enter your SMTP Port: " SMTP_PORT
+    askquestion "Enter your SMTP Username: " SMTP_USER
+    askquestion "Enter your SMTP Password: " SMTP_PASS -s
+    askquestion "Do you want to use a secure SMTP connection? (yes/no) " SMTP_SECURE
+    askquestion "Enter the email you want to send mails from: " SMTP_FROM
+    echo -e "SMTP_HOST=${SMTP_HOST}\nSMTP_PORT=${SMTP_PORT}\nSMTP_USER=${SMTP_USER}\nSMTP_PASS=${SMTP_PASS}\nSMTP_SECURE=${SMTP_SECURE}\nSMTP_FROM=${SMTP_FROM}" >> .env
+    ;;
+*)
+    echo "Invalid option"
+    echo -e "Usage: ./setup COMMAND\n"
+    echo -e "${UNDERLINE}Commands:${NC}"
+    echo -e \
+    "    environment\tConfigures the database and sets up environment variables.
+    database\tCreates the tables in the database. (Run after environment)
+    configure\tSets up the configuration for first use. (Run after everything above)
+    mail\tSets up the email settings." | column -t -s $'\t'
+    exit 1
+    ;;
+
+esac

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.errorbox {
+    @apply flex bg-red-600/50 rounded-sm p-5 m-3 w-full border-2 border-l-[12px] border-l-red-500 border-red-300/20 border-dotted justify-center items-center text-center;
+    border-left-style: solid;
+}
+
+.successbox {
+    @apply flex bg-green-600/50 rounded-sm p-5 m-3 w-full border-2 border-l-[12px] border-l-green-500 border-green-300/20 border-dotted justify-center items-center text-center;
+    border-left-style: solid;
+}
